@@ -19,5 +19,5 @@ A mensagem sugere que a autenticação não depende de senha, mas sim dos cookie
 
 ### Decodificação
 O valor do cookie esta codificado em Base64. Utilizando a ferramenta [dcode.fr](https://www.dcode.fr/base-64-encoding), decodificamos o valor e obtivemos a flag:
->`[picoCTF{c00k1e_m0nster_l0ves_c00kies_E634DFBB]`
+>`[picoCTF{c00k1e_m0nster_l0ves_c00kies_E634DFBB}]`
 
