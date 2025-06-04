@@ -1,5 +1,4 @@
-
-# [XOR Challenge]  
+# [XOR Properties]  
 ###### Resolvido por @[SebastiaoKomada]  
 > Desafio CryptoHack sobre XOR
 
