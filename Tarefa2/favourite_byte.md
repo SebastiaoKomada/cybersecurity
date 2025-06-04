@@ -1,5 +1,4 @@
-
-# [XOR Challenge]
+# [Favourite byte]
 ###### Resolvido por @[SebastiaoKomada]
 > Desafio CryptoHack sobre XOR
 
