@@ -112,7 +112,7 @@ function escape(input) {
     return '<input value="' + input + '" type="text">';
 } 
 ````
-Resolução funcinal:
+Resolução funcional:
 ````
 "type=img src
 =a onerror
@@ -386,7 +386,7 @@ Resolução funcional:
 Explicação:
 O código divide a entrada pelo caractere `#` e limita cada segmento a 15 caracteres.  
 Ao fechar o atributo `title` e injetar um `<script>`, a execução não ocorre da forma esperada.  
-Porém, utilizando a mesma técnica do exercício 7 com template literals, o conteúdo dentro de `${}` é interpretado como código JavaScript.  
+Porém, utilizando a mesma técnica do desafio 7 com template literals, o conteúdo dentro de `${}` é interpretado como código JavaScript.  
 Assim, a função é executada, permitindo a exploração.
 
 ## Desafios não finalizados
