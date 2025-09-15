@@ -1,6 +1,6 @@
 # [Forbidden Paths]  
 ###### Resolvido por @[SebastiaoKomada]  
-> Desafio Web Exploitation  
+> Desafio Web Exploitation
 
 ## Sobre o Desafio  
 O enunciado apresenta a seguinte descrição: *“Você pode pegar a bandeira? Sabemos que os arquivos do site vivem em `/usr/share/nginx/html/` e o sinalizador está em `/flag.txt`, mas o site está filtrando caminhos de arquivo absolutos. Você pode superar o filtro para ler o sinalizador?”*.  
