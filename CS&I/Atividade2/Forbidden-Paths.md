@@ -24,8 +24,8 @@ Isso já deixava evidente que a aplicação estava verificando o caminho forneci
 
 ### Analisando o caminho  
 Da descrição do enunciado, sabemos que:  
-- O diretório raiz da aplicação é `/usr/share/nginx/html/`.  
-- A flag está armazenada em `/flag.txt`.  
+O diretório raiz da aplicação é `/usr/share/nginx/html/`.  
+A flag está armazenada em `/flag.txt`.  
 
 Portanto, para alcançar a flag, seria necessário **voltar da pasta atual até a raiz** do sistema de arquivos e, de lá, abrir o arquivo desejado.  
 
