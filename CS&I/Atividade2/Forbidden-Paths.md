@@ -20,7 +20,7 @@ Testando entradas básicas, como `flag.txt`, a resposta foi imediata:
 File does not exist
 ```  
 
-Isso já deixava evidente que a aplicação estava verificando o caminho fornecido, aceitando apenas arquivos relativos à pasta atual.  
+Isso deixa evidente que a aplicação estava verificando o caminho fornecido, aceitando apenas arquivos relativos à pasta atual.  
 
 ### Analisando o caminho  
 Da descrição do enunciado, sabemos que:  
@@ -32,13 +32,13 @@ Portanto, para alcançar a flag, seria necessário **voltar da pasta atual até 
 Cada ocorrência de `../` permite retornar um nível de diretório. Assim, aplicando a sequência quatro vezes (`../../../../`), conseguimos retroceder até o diretório raiz.  
 
 ### Acesso ao arquivo da flag  
-Com esse raciocínio, bastava enviar o seguinte valor no input:  
+Com essa lógica, basta enviar o seguinte valor no input:  
 
 ```
 ../../../../flag.txt
 ```  
 
-Ao submeter esse caminho, a aplicação revelou diretamente o conteúdo do arquivo contendo a flag:  
+Ao enviar esse caminho, a aplicação revela diretamente o conteúdo do arquivo contendo a flag:  
 
 ![flag-output](https://github.com/user-attachments/assets/fd13f668-94c0-46a6-83d3-50369f52d2e0)  
 
