@@ -44,7 +44,7 @@ Verifica-se que o formulário realiza um envio via método POST para a
 rota `/`, transmitindo o valor do campo `content` ao servidor.
 
 Quando qualquer valor é submetido (por exemplo, `ola`), a aplicação
-responde com uma nova página exibindo o texto informado:\
+responde com uma nova página exibindo o texto informado:
 <img width="1466" height="759" alt="Captura de Tela 2025-09-23 às 15 58 50" src="https://github.com/user-attachments/assets/08a34890-445f-4b81-aa39-0fa92a6f4a47" />
 
 Considerando que o desafio envolve **Server Side Template Injection**,
@@ -71,12 +71,12 @@ Esse método, que evita o uso direto de `.` e `_`, retornou como resposta
 a listagem de arquivos disponíveis no diretório:
 <img width="1470" height="763" alt="Captura de Tela 2025-09-23 às 16 10 23" src="https://github.com/user-attachments/assets/69f64799-ae21-425e-bffd-fa8600c22e32" />
 
-Na saída, foi identificado o arquivo `flag`.\
+Na saída, foi identificado o arquivo `flag`.
 Assim, utilizou-se o payload:
 
 `{{request['application']['__globals__']['__builtins__']['__import__']('os')['popen']('cat flag')['read']()}}`
 
-A resposta revelou o conteúdo da flag:\
+A resposta revelou o conteúdo da flag:
 <img width="1470" height="761" alt="Captura de Tela 2025-09-23 às 16 11 55" src="https://github.com/user-attachments/assets/83d4136e-6659-4116-8fad-59c221c9d71b" />
 
 ### Flag encontrada
