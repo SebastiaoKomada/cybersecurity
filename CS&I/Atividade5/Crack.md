@@ -124,6 +124,16 @@ O programa havia montado e armazenado a senha final:
 00sGo4M0
 ```
 
+Apos receber a senha final, podemos testar no programa:
+
+```
+└─$ ./crack
+enter the right password
+00sGo4M0
+good kitty!
+```
+Com isso confirmamos que a senha montada pelo programa é, de fato, a senha correta: ao fornecê-la na execução o programa retorna good kitty!.
+
 ---
 
 ### Explicação 
