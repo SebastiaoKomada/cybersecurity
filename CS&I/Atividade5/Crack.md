@@ -148,3 +148,22 @@ A leitura correta deve ser feita **logo após o loop**, onde o buffer já está 
 
 ## Flag encontrada  
 **Flag:** `00sGo4M0`
+
+---
+
+### Aprendizado
+Ao longo da investigação executei e aprendi diversos comandos do **radare2** que facilitaram a depuração e a extração da senha.  
+Abaixo estão os principais, com suas finalidades e exemplos práticos:
+
+- `db <endereço>` — coloca um breakpoint.  
+  Ex: `db 0x563d90e902fd`
+
+- `dc` — continua a execução até o próximo breakpoint.  
+  Ex: `dc`
+
+- `ps <n> @ <endereço>` — imprime `n` bytes como string (útil quando o conteúdo é texto).  
+  Ex: `ps 8 @ rsp+0x10` → `00sGo4M0`
+
+- `px <n> @ <endereço>` — imprime `n` bytes em hex (útil pra ver os bytes crus e a ordem).  
+  Ex: `px 8 @ rsp+0x10` → `0x00 0x30 0x73 ...`
+
