@@ -94,7 +94,7 @@ Após alguns segundos, foi recebida a seguinte resposta no servidor, contendo o 
 
 <img width="1183" height="236" alt="image" src="https://github.com/user-attachments/assets/e482152d-4271-4aeb-ad85-9c0765dfe046" />
 
-Com o cookie verdadeiro da conta de moderador em mãos, substituí o valor da sessão PHPSESSID no domínio login.worldwap.thm. Ao recarregar a página, foi possível acessar automaticamente a conta de moderador, resultando na flag que restava:
+Com o cookie verdadeiro da conta de moderador em mãos, substituí o valor da sessão **PHPSESSID** no domínio login.worldwap.thm. Ao recarregar a página, foi possível acessar automaticamente a conta de moderador, resultando na flag que restava:
 
 <img width="1917" height="920" alt="image" src="https://github.com/user-attachments/assets/dbdbe657-0adc-46b7-895b-deccaaf2c0b7" />
 
